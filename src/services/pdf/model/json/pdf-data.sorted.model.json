@@ -1,0 +1,39 @@
+{
+  "commercialInvoiceNo": "",
+  "exporterAccountNo": "",
+  "exporterName": "",
+  "exporterPhone": "",
+  "exporterStreet": "",
+  "exporterCity": "",
+  "exporterPostalCode": "",
+  "exporterProvince": "",
+  "exporterCountry": "",
+  "consigneeName": "",
+  "consigneePhone": "",
+  "consigneeStreet": "",
+  "consigneeCity": "",
+  "consigneePostalCode": "",
+  "consigneeProvince": "",
+  "consigneeCountry": "",
+  "taxIdentificationNo": "",
+  "parts": [
+    {
+      "partsInvoiceNo": "14194144514389941",
+      "partsPurchaseNo": "25786",
+      "partName": "RUBBER O RING",
+      "partNumber": "N90220702645-22-01",
+      "tariffCode": "4016.93",
+      "description": "RUBBER O RING",
+      "countryOfOrigin": "TH"
+    },
+    {
+      "partsInvoiceNo": "14194154514482381",
+      "partsPurchaseNo": "25787",
+      "partName": "RUBBER O RING",
+      "partNumber": "N90222702645-22-21 REV 03",
+      "tariffCode": "4016.93",
+      "description": "RUBBER O RING",
+      "countryOfOrigin": "TW"
+    }
+  ]
+}

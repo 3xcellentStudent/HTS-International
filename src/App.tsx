@@ -1,12 +1,17 @@
 import { useCallback, useState } from 'react';
 import './App.css'
 import pdfReader from './services/pdf/services/pdfReader';
+import type PdfDataType from './types/pdf-data.type';
+import PdfService from './services/pdf/services/pdfReader';
 
 export default function App(){
 
-const [fileName, setFileName] = useState<string | null>(null);
+  const pdfService = new PdfService();
 
-const handleDrop = useCallback((event: React.DragEvent) => {
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [pdfData, setPdfData] = useState<PdfDataType>()
+
+  const handleDrop = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
     if (!file) return;
@@ -17,7 +22,8 @@ const handleDrop = useCallback((event: React.DragEvent) => {
     reader.onload = (e) => {
       const fileContents = e.target?.result;
       // console.log("Вот содержимое файла:", fileContents);
-      pdfReader(fileContents as ArrayBuffer)
+      // pdfReader(fileContents as ArrayBuffer, setPdfData)
+      pdfService.readPdfDoc(fileContents as ArrayBuffer, setPdfData)
 
 
       // дальше можешь делать с fileContents всё что хочешь
