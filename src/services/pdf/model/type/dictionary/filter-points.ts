@@ -20,6 +20,18 @@ const filterPoints = {
     {index: 7, fieldName: "consigneePostalCode"},
     {index: 8, fieldName: "consigneeCountry"},
   ]},
+  INVOICE_PARTS: {value: "Inv. No.",
+    countryOfOriginIndex: 11,
+    purchaseNo: -1,
+    invoiceNo: -2,
+    plusIndexes: [
+      {index: 11, fieldName: "countryOfOrigin"},
+      {index: 12, fieldName: "tariffCode"},
+      {index: 15, fieldName: "partName"},
+      {index: 16, fieldName: "partNumber"},
+      {index: 18, fieldName: "description"},
+    ]
+  }
 }
 
 export default filterPoints;
