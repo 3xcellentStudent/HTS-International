@@ -16,19 +16,5 @@
   "consigneeProvince": "",
   "consigneeCountry": "",
   "taxIdentificationNo": "",
-  "invoicesArray": [
-    {
-      "invoiceNo": 0,
-      "purchaseNo": "",
-      "parts": [
-        {
-          "partName": "",
-          "partNumber": "",
-          "tariffCode": "",
-          "countryOfOrigin": "",
-          "description": ""
-        }
-      ]
-    }
-  ]
+  "invoicesArray": []
 }

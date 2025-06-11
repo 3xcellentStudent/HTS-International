@@ -8,9 +8,9 @@ export default interface FilterPointsType {
 export interface PointObjectType {value: string, plusIndexes: []}
 
 export interface InvoicePartsType {
-  invoiceNo: number,
+  invoiceNo: string,
   purchaseNo: string,
-  parts: PartType[]
+  parts: PartType[] | []
 }
 
 export interface PartType {

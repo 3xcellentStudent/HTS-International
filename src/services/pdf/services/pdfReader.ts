@@ -13,6 +13,7 @@ export default class PdfService {
 
   private state: ExportDeclarationType = pdfDataModel;
   private mainLoopIndex: number = 0;
+  private countriesOfOriginArray = appConfig.countriesOfOriginArray;
 
   constructor(){}
 
@@ -21,6 +22,7 @@ export default class PdfService {
       this.readPage(document)
       action(this.state)
     });
+    console.log(this.state)
   }
 
   private async readPage(document: PDFDocumentProxy){
@@ -34,8 +36,10 @@ export default class PdfService {
       this.state.exporterPhone = sortedItems[4].str
       this.state.commercialInvoiceNo = sortedItems[5].str
 
+      this.mainLoopIndex = 0;
+
       // if(i === 1){
-      this.switchFilter(sortedItems)
+      this.arrayFilter(sortedItems)
       // }
 
       
@@ -48,44 +52,105 @@ export default class PdfService {
     }
   }
 
-  private switchFilter(array: TextItem[]){
+  private arrayFilter(array: TextItem[]){
 
-    const {COMMERCIAL_INV_NO, CONSIGNEE_CUSTOMER_NO, SHIPMENT_INFORMATION, INVOICE_PARTS} = filterPoints;
+    const {COMMERCIAL_INV_NO, CONSIGNEE_CUSTOMER_NO, SHIPMENT_INFORMATION, INVOICES_ARRAY} = filterPoints;
 
     while(this.mainLoopIndex < array.length){
-      switch(array[this.mainLoopIndex].str){
-        case COMMERCIAL_INV_NO.value: {
-          COMMERCIAL_INV_NO.plusIndexes.forEach(({fieldName, index}) => {
-            this.state[fieldName] = array[this.mainLoopIndex + index].str;
-          })
-          this.mainLoopIndex += COMMERCIAL_INV_NO.plusIndexes[COMMERCIAL_INV_NO.plusIndexes.length - 1].index + 1;
-        } case CONSIGNEE_CUSTOMER_NO.value: {
-          CONSIGNEE_CUSTOMER_NO.plusIndexes.forEach(({fieldName, index}) => {
-            this.state[fieldName] = array[this.mainLoopIndex + index].str;
-          })
-          this.mainLoopIndex += CONSIGNEE_CUSTOMER_NO.plusIndexes[CONSIGNEE_CUSTOMER_NO.plusIndexes.length - 1].index + 1;
-        } case SHIPMENT_INFORMATION.value: {
-          SHIPMENT_INFORMATION.plusIndexes.forEach(({fieldName, index}) => {
-            this.state[fieldName] = array[this.mainLoopIndex + index].str;
-          })
-          this.mainLoopIndex += SHIPMENT_INFORMATION.plusIndexes[SHIPMENT_INFORMATION.plusIndexes.length - 1].index + 1;
-        } case INVOICE_PARTS.value: {
-          const countryOfOrigin = array[this.mainLoopIndex + INVOICE_PARTS.countryOfOriginIndex].str
-          const {acceptedCountriesOfOrigin} = appConfig;
 
-          if(countryOfOrigin.includes(acceptedCountriesOfOrigin[0] || acceptedCountriesOfOrigin[1])){
+      // switch(array[this.mainLoopIndex].str){
+      //   case COMMERCIAL_INV_NO.value: {
+      //     COMMERCIAL_INV_NO.plusIndexes.forEach(({fieldName, index}) => {
+      //       this.state[fieldName] = array[this.mainLoopIndex + index].str;
+      //     })
+      //     this.mainLoopIndex += COMMERCIAL_INV_NO.plusIndexes[COMMERCIAL_INV_NO.plusIndexes.length - 1].index + 1;
+      //   } case CONSIGNEE_CUSTOMER_NO.value: {
+      //     CONSIGNEE_CUSTOMER_NO.plusIndexes.forEach(({fieldName, index}) => {
+      //       this.state[fieldName] = array[this.mainLoopIndex + index].str;
+      //     })
+      //     this.mainLoopIndex += CONSIGNEE_CUSTOMER_NO.plusIndexes[CONSIGNEE_CUSTOMER_NO.plusIndexes.length - 1].index + 1;
+      //   } case SHIPMENT_INFORMATION.value: {
+      //     SHIPMENT_INFORMATION.plusIndexes.forEach(({fieldName, index}) => {
+      //       this.state[fieldName] = array[this.mainLoopIndex + index].str;
+      //     })
+      //     this.mainLoopIndex += SHIPMENT_INFORMATION.plusIndexes[SHIPMENT_INFORMATION.plusIndexes.length - 1].index + 1;
+      //   } case INVOICES_ARRAY.value: {
+      //     const invoiceObject: InvoicePartsType = {
+      //       invoiceNo: array[this.mainLoopIndex + INVOICES_ARRAY.invoiceNo].str,
+      //       purchaseNo: array[this.mainLoopIndex + INVOICES_ARRAY.purchaseNo].str,
+      //       parts: [],
+      //     }
 
-            const invoiceObject: InvoicePartsType = {}
+      //     this.state.invoicesArray.push(invoiceObject);
+      //     this.mainLoopIndex++;
+      //   } case this.countriesOfOriginArray: {
+          
+      //   } default: {
+      //     this.mainLoopIndex++;
+      //   }
+      // }
 
-            INVOICE_PARTS.plusIndexes.forEach(({fieldName, index}) => {
-              this.state["parts"] = array[this.mainLoopIndex + index].str;
-            })
+      const oneString = array[this.mainLoopIndex].str;
 
-            this.state["in"].push(invoiceObject)
-          }
-        } default: {
-          this.mainLoopIndex++;
+      if(oneString === COMMERCIAL_INV_NO.value){
+        COMMERCIAL_INV_NO.plusIndexes.forEach(({fieldName, index}) => {
+          this.state[fieldName] = array[this.mainLoopIndex + index].str;
+        })
+        this.mainLoopIndex += COMMERCIAL_INV_NO.plusIndexes[COMMERCIAL_INV_NO.plusIndexes.length - 1].index + 1;
+        // return;
+      } else if(oneString === CONSIGNEE_CUSTOMER_NO.value){
+        CONSIGNEE_CUSTOMER_NO.plusIndexes.forEach(({fieldName, index}) => {
+          this.state[fieldName] = array[this.mainLoopIndex + index].str;
+        })
+        this.mainLoopIndex += CONSIGNEE_CUSTOMER_NO.plusIndexes[CONSIGNEE_CUSTOMER_NO.plusIndexes.length - 1].index + 1;
+        // return;
+      } else if(oneString === SHIPMENT_INFORMATION.value){
+        SHIPMENT_INFORMATION.plusIndexes.forEach(({fieldName, index}) => {
+          this.state[fieldName] = array[this.mainLoopIndex + index].str;
+        })
+        this.mainLoopIndex += SHIPMENT_INFORMATION.plusIndexes[SHIPMENT_INFORMATION.plusIndexes.length - 1].index + 1;
+        // return;
+      } else if(oneString.includes(INVOICES_ARRAY.value)){
+        const purchaseNoElement = array[this.mainLoopIndex + INVOICES_ARRAY.purchaseNo].str;
+
+        const purchaseNo = purchaseNoElement.includes(" ") ? purchaseNoElement.split(" ")[0] : purchaseNoElement;
+
+        const newInvoiceObject: InvoicePartsType = {
+          invoiceNo: array[this.mainLoopIndex + INVOICES_ARRAY.invoiceNo].str,
+          purchaseNo,
+          parts: [],
+        };
+        this.state.invoicesArray.push(newInvoiceObject);
+        this.mainLoopIndex++;
+        // return;
+      } else if(this.countriesOfOriginArray.includes(oneString.toUpperCase())){
+        const partObject = {
+          partName: "",
+          partNumber: "",
+          tariffCode: array[this.mainLoopIndex + 1].str,
+          countryOfOrigin: array[this.mainLoopIndex].str,
+          description: ""
         }
+
+        const part = array[this.mainLoopIndex + 4].str;
+
+        if(part.includes(" ") || part.length > 2){
+          const [partName, partNumber] = part.split(" ");
+
+          partObject.partName = partName;
+          partObject.partNumber = partNumber;
+          partObject.description = array[this.mainLoopIndex + 6].str;
+          this.mainLoopIndex += 6
+        } else {
+          partObject.partName = part;
+          partObject.partNumber = array[this.mainLoopIndex + 5].str;
+          partObject.description = array[this.mainLoopIndex + 7].str;
+          this.mainLoopIndex += 7
+        }
+
+        this.state.invoicesArray.at(-1)?.parts.push(partObject);
+      } else {
+        this.mainLoopIndex++;
       }
     }
   }

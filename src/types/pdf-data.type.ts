@@ -20,13 +20,15 @@ export default interface ExportDeclarationType {
 };
 
 export interface InvoicesArrayType {
-  invoiceNo: number
+  invoiceNo: string
   purchaseNo: string
-  parts: {
-    partName: string
-    partNumber: string
-    tariffCode: string
-    countryOfOrigin: string
-    description: string
-  }[]
+  parts: PartObjectType[]
+}
+
+export interface PartObjectType {
+  partName: string
+  partNumber: string
+  tariffCode: string
+  countryOfOrigin: string
+  description: string
 }
