@@ -1,6 +1,6 @@
 export default interface ExportDeclarationType {
   commercialInvoiceNo: string
-  exporterAccountNo: string
+  // exporterAccountNo: string
   exporterName: string
   exporterPhone: string
   exporterStreet: string

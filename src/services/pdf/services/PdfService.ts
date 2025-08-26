@@ -14,22 +14,23 @@ export default class PdfService {
   private state: ExportDeclarationType = pdfDataModel;
   private mainLoopIndex: number = 0;
   private countriesOfOriginArray = appConfig.countriesOfOriginArray;
+  private currentPageNumber = 1;
 
-  constructor(){}
+  public async readPdfDoc(buffer: ArrayBuffer, action: (state: ExportDeclarationType) => void){
+    const lock = await getDocument({ data: buffer }).promise.then(async (document) => {
+      await this.readPage(document)
 
-  public readPdfDoc(buffer: ArrayBuffer, action: (state: ExportDeclarationType) => void){
-    getDocument({ data: buffer }).promise.then((document) => {
-      this.readPage(document)
-      action(this.state)
+      return true;
     });
-    console.log(this.state)
+    if(lock) action(this.state);
   }
 
   private async readPage(document: PDFDocumentProxy){
     const {numPages} = document;
 
-    for(let i = 1; i <= numPages; i++){
-      const page = await document.getPage(i);
+    // for(let i = 1; i <= numPages; i++){
+    while(this.currentPageNumber <= numPages){
+      const page = await document.getPage(this.currentPageNumber);
       const text = await page.getTextContent();
       const sortedItems = text.items.filter((item): item is TextItem => 'str' in item && item.str.trim() !== '');
 
@@ -44,11 +45,11 @@ export default class PdfService {
 
       
       
-      // console.log(this.state)
-      console.log("---------------------------------------------------------------------------------")
-      console.log("Page number: ", i)
-      console.log(sortedItems)
-      console.log("---------------------------------------------------------------------------------")
+      // console.log("---------------------------------------------------------------------------------")
+      // console.log("Page number: ", this.currentPageNumber)
+      // console.log(sortedItems)
+      // console.log("---------------------------------------------------------------------------------")
+      this.currentPageNumber++;
     }
   }
 
@@ -57,39 +58,6 @@ export default class PdfService {
     const {COMMERCIAL_INV_NO, CONSIGNEE_CUSTOMER_NO, SHIPMENT_INFORMATION, INVOICES_ARRAY} = filterPoints;
 
     while(this.mainLoopIndex < array.length){
-
-      // switch(array[this.mainLoopIndex].str){
-      //   case COMMERCIAL_INV_NO.value: {
-      //     COMMERCIAL_INV_NO.plusIndexes.forEach(({fieldName, index}) => {
-      //       this.state[fieldName] = array[this.mainLoopIndex + index].str;
-      //     })
-      //     this.mainLoopIndex += COMMERCIAL_INV_NO.plusIndexes[COMMERCIAL_INV_NO.plusIndexes.length - 1].index + 1;
-      //   } case CONSIGNEE_CUSTOMER_NO.value: {
-      //     CONSIGNEE_CUSTOMER_NO.plusIndexes.forEach(({fieldName, index}) => {
-      //       this.state[fieldName] = array[this.mainLoopIndex + index].str;
-      //     })
-      //     this.mainLoopIndex += CONSIGNEE_CUSTOMER_NO.plusIndexes[CONSIGNEE_CUSTOMER_NO.plusIndexes.length - 1].index + 1;
-      //   } case SHIPMENT_INFORMATION.value: {
-      //     SHIPMENT_INFORMATION.plusIndexes.forEach(({fieldName, index}) => {
-      //       this.state[fieldName] = array[this.mainLoopIndex + index].str;
-      //     })
-      //     this.mainLoopIndex += SHIPMENT_INFORMATION.plusIndexes[SHIPMENT_INFORMATION.plusIndexes.length - 1].index + 1;
-      //   } case INVOICES_ARRAY.value: {
-      //     const invoiceObject: InvoicePartsType = {
-      //       invoiceNo: array[this.mainLoopIndex + INVOICES_ARRAY.invoiceNo].str,
-      //       purchaseNo: array[this.mainLoopIndex + INVOICES_ARRAY.purchaseNo].str,
-      //       parts: [],
-      //     }
-
-      //     this.state.invoicesArray.push(invoiceObject);
-      //     this.mainLoopIndex++;
-      //   } case this.countriesOfOriginArray: {
-          
-      //   } default: {
-      //     this.mainLoopIndex++;
-      //   }
-      // }
-
       const oneString = array[this.mainLoopIndex].str;
 
       if(oneString === COMMERCIAL_INV_NO.value){

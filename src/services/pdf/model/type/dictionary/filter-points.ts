@@ -2,7 +2,7 @@
 
 const filterPoints = {
   COMMERCIAL_INV_NO: {value: "Commercial Inv. No.", plusIndexes: [
-    {index: 1, fieldName: "exporterAccountNo"},
+    {index: 1, fieldName: "taxIdentificationNo"},
     {index: 2, fieldName: "exporterName"},
     {index: 4, fieldName: "exporterStreet"},
   ]},
